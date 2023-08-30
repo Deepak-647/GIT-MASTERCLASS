@@ -6,6 +6,8 @@ const products = data.products;
 
 const express = require("express");
 const server = express();
+const morgan = require('morgan');
+
 
 // server.get("/", (req, res) => {
 //   // res.send("hello")
@@ -21,13 +23,18 @@ server.use(express.json());
 
 // server.use(express.urlencoded());
 
+
+//using morgan  which is a third party middleware
+// server.use(morgan('dev'))
+server.use(morgan('default'))
 server.use(express.static('public'));
 
-server.use((req, res, next) => {
-  console.log(req.get('User-Agent'),req.method, req.ip, req.hostname)
-  next()
+// server.use((req, res, next) => {
+//   console.log(req.get('User-Agent'),req.method, req.ip, req.hostname)
+//   next()
   
-});
+// });
+
 
 // const auth = (req,res,next)=>{
 //     // console.log(req.query)
