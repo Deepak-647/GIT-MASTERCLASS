@@ -58,7 +58,8 @@ const auth = (req,res,next)=>{
 // server.use(auth)
 
 // API - ENDPOINT - ROUTE
-server.get("/", auth,(req, res) => {
+server.get("/product/:id",(req, res) => {
+    console.log(req.params)
   res.json({ type: "GET" });
 });
 server.post("/",auth, (req, res) => {
