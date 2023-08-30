@@ -1,51 +1,43 @@
-const http = require('http');
-const fs =require('fs')
+const fs = require("fs");
 
-const index =fs.readFileSync('index.html','utf-8');
-const data = JSON.parse(fs.readFileSync('data.json','utf-8'));
-const products =data.products;
+// const index =fs.readFileSync('index.html','utf-8');
+const data = JSON.parse(fs.readFileSync("data.json", "utf-8"));
+const products = data.products;
 
-const server =http.createServer((req,res)=>{
-//request url
+const express = require("express");
+const server = express();
 
-
-if(req.url.startsWith('/product')){
-    const id=req.url.split('/')[2]
-    const product=  products.find(p=>p.id === (+id))
-    res.setHeader('Content-Type',"text/html")
-    let modifiedIndex =index
-    .replace("**title**",product.title)
-    .replace("**price**",product.price)
-    .replace("**url**",product.thumbnail)
-    .replace("**rating**",product.rating)
-    res.end(modifiedIndex);
-    return;
-   
-}
-
-switch(req.url){
-    case '/' :
-        res.setHeader('Content-Type',"text/html")
-        res.end(index)
-        break;
-    case '/api' :
-        res.setHeader('Content-Type',"application/json")
-        res.end(JSON.stringify(data))
-        break;
-    case '/product' :
-        res.setHeader('Content-Type',"text/html")
-        let modifiedIndex =index.replace("**title**",product.title).replace("**price**",product.price).replace("**url**",product.thumbnail).replace("**rating**",product.rating)
-        res.end(modifiedIndex)
-        break;
-    default:
-    res.writeHead(404,'Not Found')
-    res.end()
-
-}
+// server.get("/", (req, res) => {
+//   // res.send("hello")
+//   // res.sendFile('C:\Users\Deepak\Desktop\Learning Node JS from Coder Dost\index.html')
+//   res.json(products);
+// });
 
 
+//Middleware
+server.use((req, res, next) => {
+  console.log(req.get('User-Agent'),req.method, req.ip, req.hostname)
+  next()
+  
+});
 
-   
-})
+// API - ENDPOINT - ROUTE
+server.get("/", (req, res) => {
+  res.json({ type: "GET" });
+});
+server.post("/", (req, res) => {
+  res.json({ type: "POST" });
+});
+server.put("/", (req, res) => {
+  res.json({ type: "PUT" });
+});
+server.delete("/", (req, res) => {
+  res.json({ type: "DELETE" });
+});
+server.patch("/", (req, res) => {
+  res.json({ type: "PATCH" });
+});
 
-server.listen(8080);
+server.listen(8080, () => {
+  console.log("server started");
+});
