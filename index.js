@@ -15,17 +15,46 @@ const server = express();
 
 
 //Middleware
+
+//This is a built in middleware which uses to read the body which is in JSON format
+server.use(express.json());
+
+// server.use(express.urlencoded());
+
+server.use(express.static('public'));
+
 server.use((req, res, next) => {
   console.log(req.get('User-Agent'),req.method, req.ip, req.hostname)
   next()
   
 });
 
+// const auth = (req,res,next)=>{
+//     // console.log(req.query)
+
+//     if(req.query.password === '123'){
+//         next();
+//     }else{
+//         res.sendStatus(401);
+//     }
+// }
+const auth = (req,res,next)=>{
+    // console.log(req.query)
+
+    if(req.body.password === '123'){
+        next();
+    }else{
+        res.sendStatus(401);
+    }
+}
+
+// server.use(auth)
+
 // API - ENDPOINT - ROUTE
-server.get("/", (req, res) => {
+server.get("/", auth,(req, res) => {
   res.json({ type: "GET" });
 });
-server.post("/", (req, res) => {
+server.post("/",auth, (req, res) => {
   res.json({ type: "POST" });
 });
 server.put("/", (req, res) => {
