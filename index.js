@@ -13,8 +13,6 @@ server.use(morgan('default'))
 server.use(express.static('public'));
 
 
-
-
 // API - Endpoint - Route
 
 // Products
@@ -28,8 +26,7 @@ server.post('/products', (req, res) => {
 });
 
 
-
-// Read GET /products
+ 
 server.get('/products', (req, res) => {
   res.json(products);
 });
