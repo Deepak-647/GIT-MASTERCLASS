@@ -1,16 +1,13 @@
-const fs = require('fs');
-const index = fs.readFileSync('index.html', 'utf-8');
-const data = JSON.parse(fs.readFileSync('data.json', 'utf-8'));
-const products = data.products;
-
 const express = require('express');
 const morgan = require('morgan');
 const server = express();
+const productController = require('./controller/product')
 
 //bodyParser
 server.use(express.json());
 server.use(morgan('default'))
 server.use(express.static('public'));
+
 
 
 // API - Endpoint - Route
@@ -19,56 +16,17 @@ server.use(express.static('public'));
 // API ROOT , base URL, example - google.com/api/v2/
 
 //Create POST /products     C R U D
-server.post('/products', (req, res) => {
-  console.log(req.body);
-  products.push(req.body);
-  res.status(201).json(req.body);
-});
-
-
- 
-server.get('/products', (req, res) => {
-  res.json(products);
-});
-
+server.post('/products', productController.createProduct);
+server.get('/products',productController.getProducts );
 // Read GET /products/:id
-server.get('/products/:id', (req, res) => {
-  const id = +req.params.id;
-  const product = products.find(p=>p.id===id)
-  res.json(product);
-});
-
+server.get('/products/:id', productController.getProduct);
 // Update PUT /products/:id
-server.put('/products/:id', (req, res) => {
-  const id = +req.params.id;
-  const productIndex = products.findIndex(p=>p.id===id)
-  products.splice(productIndex,1,{...req.body, id:id})
-  res.status(201).json();
-});
+server.put('/products/:id', productController.replaceProduct);
 // Update PATCH /products/:id
-server.patch('/products/:id', (req, res) => {
-  const id = +req.params.id;
-  const productIndex = products.findIndex(p=>p.id===id)
-  const product = products[productIndex];
-  products.splice(productIndex,1,{...product,...req.body})
-  res.status(201).json();
-});
+server.patch('/products/:id', productController.updateProduct);
 // Delete DELETE /products/:id
-server.delete('/products/:id', (req, res) => {
-  const id = +req.params.id;
-  const productIndex = products.findIndex(p=>p.id===id)
-  const product = products[productIndex];
-  products.splice(productIndex,1)
-  res.status(201).json(product);
-});
+server.delete('/products/:id', productController.deleteProduct);
 
-
-server.get('/demo', (req, res) => {
-  // res.sendStatus(404);
-  // res.json(products)
-  // res.status(201).send('<h1>hello</h1>')
-  // res.sendFile('/Users/abhishekrathore/Desktop/node-app/index.html')
-});
 
 server.listen(8080, () => {
   console.log('server started');
