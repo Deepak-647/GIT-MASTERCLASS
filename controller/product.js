@@ -1,13 +1,27 @@
 const fs = require('fs');
 // const index = fs.readFileSync('index.html', 'utf-8');
-const data = JSON.parse(fs.readFileSync('data.json', 'utf-8'));
-const products = data.products;
+// const data = JSON.parse(fs.readFileSync('data.json', 'utf-8'));
+// const products = data.products;
+ const model = require('../model/product')
+ const Product = model.Product;
+ 
+ 
+ exports.createProduct = async (req, res) => {
+  try {
+      const product = new Product(req.body);
+       
 
-exports.createProduct = (req, res) => {
-    console.log(req.body);
-    products.push(req.body);
-    res.status(201).json(req.body);
+      // Save the product and await the promise
+      const savedProduct = await product.save();
+
+      console.log({ savedProduct }); // Log the saved product
+
+      res.status(201).json(savedProduct);
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Error saving the product' });
   }
+}
   
   exports.getProducts = (req, res) => {
     res.json(products);
